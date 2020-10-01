@@ -1,0 +1,59 @@
+<div class="form_container">
+<%= form_with(model: task, local: true) do |form| %>
+  <% if task.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(task.errors.count, "error") %> prohibited this task from being saved:</h2>
+
+      <ul>
+      <% task.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :name %>
+    <%= form.text_field :name %>
+  </div>
+
+  <div class="field">
+    <%= form.label :"Project" %>
+     <%= form.select(:project_id, @projects_list) %>
+  </div>
+
+
+  <div class="field">
+    <%= form.label :description %>
+    <%= form.text_area :description %>
+  </div>
+
+  <div class="field">
+    <%= @task.project.metric_one_label+' lower bound' %>
+    <br>
+    <%= form.text_field :duration_lb %>
+  </div>
+
+  <div class="field">
+    <%= @task.project.metric_one_label+' upper bound' %>
+    <br>
+    <%= form.text_field :duration_ub %>
+  </div>
+
+  <div class="field">
+    <%= @task.project.metric_two_label+' lower bound' %>
+    <br>
+    <%= form.text_field :cost_lb %>
+  </div>
+
+  <div class="field">
+    <%= @task.project.metric_two_label+' lower bound' %>
+    <br>
+    <%= form.text_field :cost_ub %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>
+</div>

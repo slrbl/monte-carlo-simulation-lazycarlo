@@ -1,0 +1,146 @@
+<p id="notice"><%= notice %></p>
+
+
+<%= render 'navigation' %>
+
+
+<h2><%= @project.name %></h2>
+<p>
+  <strong>Name:</strong>
+  <%= @project.name %>
+</p>
+
+<p>
+  <strong>Description:</strong>
+  <%= @project.description %>
+</p>
+
+
+
+
+<h3>Project tasks</h3>
+
+<div style="width:100%;text-align:right">
+<%= link_to 'Add  a new  Task', new_task_path(:project_id=>@project.id) %>
+</div>
+
+<% if @project.tasks.count>0%>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+
+      <th><%= @project.metric_one_label+" LB" %></th>
+      <th><%= @project.metric_one_label+" UB" %></th>
+      <th><%= @project.metric_two_label+" LB" %></th>
+      <th><%= @project.metric_two_label+" UB" %></th>
+
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <% duration_lb_total = 0 %>
+  <% duration_ub_total = 0 %>
+  <% cost_lb_total = 0 %>
+  <% cost_ub_total = 0 %>
+  <tbody>
+    <% @project.tasks.each do |task| %>
+    <% duration_lb_total+=task.duration_lb%>
+    <% duration_ub_total+=task.duration_ub%>
+    <% cost_lb_total+=task.cost_lb%>
+    <% cost_ub_total+=task.cost_ub%>
+      <tr>
+        <td><%= task.name %></td>
+        <td><%= task.description %></td>
+        <td><%= task.duration_lb %></td>
+        <td><%= task.duration_ub %></td>
+        <td><%= task.cost_lb %></td>
+        <td><%= task.cost_ub %></td>
+        <td><%= link_to 'Show', task %></td>
+        <td><%= link_to 'Edit', edit_task_path(task) %></td>
+        <td><%= link_to 'Destroy', task, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+    <tr>
+    <td>TOTAL</td>
+    <td></td>
+    <td><%= duration_lb_total %></td>
+    <td><%= duration_ub_total %></td>
+    <td><%= cost_lb_total %></td>
+    <td><%= cost_ub_total %></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  </tbody>
+</table>
+
+
+<h3>Simulation parameters</h3>
+<div class="form_container">
+<form action="?" method="get">
+  Epochs
+  <input type="text" name="epochs" value="<%= @epochs %>">
+   Distribution
+  <select name="dist">
+
+    <% if params[:dist] == "normal" %>
+    <option value="normal" selected="selected">Normal</option>
+    <% else %>
+    <option value="normal">Normal</option>
+    <% end %>
+    <% if params[:dist] == "uniform" %>
+    <option value="uniform" selected="selected">Uniform</option>
+    <% else %>
+    <option value="uniform">Uniform</option>
+    <% end %>
+
+  </select>
+  <input type="submit" value="Run simulation">
+</form>
+</div>
+
+<h3><%= @project.metric_one_label%> Simulation</h3>
+
+
+<strong>Outcome frequencies histogram</strong>
+<%= column_chart( @dur_sim_freq,width: "100%") %>
+<br>
+<strong>Outcome cumulatime curve</strong>
+<%= line_chart( @dur_sim_freq_cumul, points: false,width: "100%") %>
+<br>
+<strong>Simulation comments</strong>
+<% for cumul_percent in (70..90).step(10) %>
+  <% @dur_sim_freq_cumul.each do |key,value| %>
+  <% if value >= cumul_percent %>
+  <p>There is an <%= value %>% probability that the outcome of <%=@project.metric_one_label%> will be <%= key %> or less </p>
+  <% break %>
+  <% end %>
+  <% end  %>
+<% end %>
+
+<br><hr width="80%"><br>
+
+<h4><%= @project.metric_two_label%> Simulation</h4>
+
+<strong>Outcome frequencies histogram</strong>
+
+<%= column_chart( @cost_sim_freq,width: "100%") %>
+<br>
+<strong>Outcome cumulatime curve</strong>
+<%= line_chart( @cost_sim_freq_cumul, points: false,width: "100%") %>
+<br>
+<strong>Simulation comments</strong>
+<% for cumul_percent in (70..90).step(10) %>
+  <% @cost_sim_freq_cumul.each do |key,value| %>
+  <% if value >= cumul_percent %>
+  <p>There is an <%= value %>% probability that the outcome of <%=@project.metric_two_label%> will be  <%= key %> or less </p>
+  <% break %>
+  <% end %>
+  <% end  %>
+<% end  %>
+
+<% else %>
+<i>Add tasks to make a simulation</i>
+<% end %>

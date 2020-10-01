@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Lazycarlo</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+  </head>
+
+  <body>
+    <%= image_tag "lazycarlo.png",height: 50%>
+    <table>
+      <tr>
+        <td>Monte Carlo simulations made easy with automation</td>
+        <td align="right">
+
+          <% if current_user != nil%>
+            <%= current_user.email %>
+            <% if current_user.is_admin == true %>
+            <span class="admin_flag">admin</span>
+            <% end %>
+            <%= link_to('Logout', destroy_user_session_path, method: :delete) %>
+          <% end %>
+
+        </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td align="right">
+            <% if notice!= nil or alert != nil%>
+            <p class="notice"><%= notice %></p>
+            <p class="alert"><%= alert %></p>
+            <% end %>
+          </td>
+          </tr>
+    </table>
+
+      <hr>
+
+    <%= yield %>
+
+    <br>
+    <br>
+    <br>
+    <br>
+    <center>Lazycarlo © 2020</center>
+
+  </body>
+</html>
