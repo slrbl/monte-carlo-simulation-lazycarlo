@@ -5,7 +5,9 @@ Lazycarlo helps you making easy Monte Carlo simulation.
 <h2>How to run</h2>
 <br>
 <code>git clone https://github.com/slrbl/monte-carlo-simulation-lazycarlo</code>
+<br>
 <code>bundle install</code>
+<br>
 <code>rails s</code>
 
 <img src="poster.png">
